@@ -1,6 +1,7 @@
 # Velô Sprint - Configurador de Veículo Elétrico
 
 Aplicação web em React para configuração e compra do veículo elétrico **Velô Sprint**.
+**Note**: As the application under test was developed in Brazilian Portuguese, the project is primarily maintained in Portuguese. To ensure consistency between the application and its documentation, this README is written in Portuguese
 
 ## Sobre o Projeto
 

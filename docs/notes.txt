@@ -1,0 +1,4 @@
+Notes
+
+Super xpath from "Consultar Pedido"
+//label[text()="Número do Pedido"]/..//input

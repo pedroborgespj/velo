@@ -8,7 +8,7 @@ test('should consult an approved order', async ({ page }) => {
   await expect(page.getByRole('heading')).toContainText('Consultar Pedido')
   
   // Act
-  await page.getByTestId('search-order-id').fill('VLO-0D0081')
+  await page.getByRole('textbox', { name: 'Número do Pedido' }).fill('VLO-0D0081')
   await page.getByTestId('search-order-button').click()
   
   // Assert

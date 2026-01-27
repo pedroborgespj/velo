@@ -9,12 +9,10 @@ test('should consult an approved order', async ({ page }) => {
   
   // Act
   await page.getByRole('textbox', { name: 'Número do Pedido' }).fill('VLO-0D0081')
-  await page.getByTestId('search-order-button').click()
+  await page.getByRole('button', { name: 'Buscar Pedido' }).click()
   
   // Assert
-  await expect(page.getByTestId('order-result-id')).toBeVisible()
-  await expect(page.getByTestId('order-result-id')).toContainText('VLO-0D0081')
-  await expect(page.getByTestId('order-result-status')).toBeVisible()
-  await expect(page.getByTestId('order-result-status')).toContainText('APROVADO')
+  await expect(page.getByText('VLO-0D0081')).toBeVisible()
+  await expect(page.getByText('APROVADO')).toBeVisible()
 
 });

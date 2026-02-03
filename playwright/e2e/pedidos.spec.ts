@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { generateOrderCode } from '../support/helpers'
 
 test('should consult an approved order', async ({ page }) => {
 
@@ -10,11 +11,11 @@ test('should consult an approved order', async ({ page }) => {
   await expect(page.getByTestId('hero-section').getByRole('heading')).toContainText('Velô Sprint')
   await page.getByRole('link', { name: 'Consultar Pedido' }).click()
   await expect(page.getByRole('heading')).toContainText('Consultar Pedido')
-  
+
   // Act
   await page.getByRole('textbox', { name: 'Número do Pedido' }).fill(order)
   await page.getByRole('button', { name: 'Buscar Pedido' }).click()
-  
+
   // Assert
   // Some alternative assertion:
   // const orderCode = page.locator('//p[text()="Pedido"]/..//p[text()="VLO-0D0081"]')
@@ -29,9 +30,9 @@ test('should consult an approved order', async ({ page }) => {
 
 });
 
-test('should show a message when the order is not found', async ({ page }) => { 
+test('should show a message when the order is not found', async ({ page }) => {
 
-  const order = 'VLO-ABC123'
+  const order = generateOrderCode()
 
   await page.goto('http://localhost:5173/')
   await expect(page.getByTestId('hero-section').getByRole('heading')).toContainText('Velô Sprint')
@@ -46,5 +47,5 @@ test('should show a message when the order is not found', async ({ page }) => {
     - heading "Pedido não encontrado" [level=3]
     - paragraph: Verifique o número do pedido e tente novamente
     `)
-  
+
 })

@@ -2,3 +2,13 @@ Notes
 
 Super xpath from "Consultar Pedido"
 //label[text()="Número do Pedido"]/..//input
+
+Some asserts validations - examples
+  // await expect(page.locator('#root')).toContainText('Pedido não encontrado')
+  // await expect(page.locator('#root')).toContainText('Verifique o número do pedido e tente novamente')
+
+  // const title = page.getByRole('heading', { name: 'Pedido não encontrado', level: 3 })
+  // await expect(title).toBeVisible()
+
+  // const message = page.locator('p', { hasText: 'Verifique o número do pedido e tente novamente' })
+  // await expect(message).toBeVisible()

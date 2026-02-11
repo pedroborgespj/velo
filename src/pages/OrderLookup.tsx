@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Search, Package, CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import { useState, type ComponentType } from 'react';
+import { Search, Package, CheckCircle, XCircle, Loader2, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -34,6 +34,24 @@ const colorLabels: Record<ExteriorColor, string> = {
   'glacier-blue': 'Glacier Blue',
   'lunar-white': 'Lunar White',
   'midnight-black': 'Midnight Black',
+};
+
+const STATUS_CONFIG: Record<
+  Order['status'],
+  { icon: ComponentType<{ className?: string }>; classes: string }
+> = {
+  APROVADO: {
+    icon: CheckCircle,
+    classes: 'bg-green-100 text-green-700',
+  },
+  REPROVADO: {
+    icon: XCircle,
+    classes: 'bg-red-100 text-red-700',
+  },
+  EM_ANALISE: {
+    icon: Clock,
+    classes: 'bg-amber-100 text-amber-700',
+  },
 };
 
 const OrderLookup = () => {
@@ -144,21 +162,21 @@ const OrderLookup = () => {
                     </p>
                   </div>
                 </div>
-                <div
-                  role="status"
-                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${
-                    searchedOrder.status === 'APROVADO'
-                      ? 'bg-green-100 text-green-700'
-                      : 'bg-red-100 text-red-700'
-                  }`}
-                >
-                  {searchedOrder.status === 'APROVADO' ? (
-                    <CheckCircle className="w-4 h-4" />
-                  ) : (
-                    <XCircle className="w-4 h-4" />
-                  )}
-                  {searchedOrder.status}
-                </div>
+                {(() => {
+                  const statusInfo =
+                    STATUS_CONFIG[searchedOrder.status] ?? STATUS_CONFIG.REPROVADO;
+                  const StatusIcon = statusInfo.icon;
+
+                  return (
+                    <div
+                      role="status"
+                      className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${statusInfo.classes}`}
+                    >
+                      <StatusIcon className="w-4 h-4" />
+                      {searchedOrder.status}
+                    </div>
+                  );
+                })()}
               </div>
             </CardHeader>
             <CardContent className="space-y-6">

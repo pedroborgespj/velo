@@ -12,3 +12,16 @@ Some asserts validations - examples
 
   // const message = page.locator('p', { hasText: 'Verifique o número do pedido e tente novamente' })
   // await expect(message).toBeVisible()
+
+
+
+    // Some alternative assertion:
+    // const orderCode = page.locator('//p[text()="Pedido"]/..//p[text()="VLO-0D0081"]')
+    // await expect(orderCode).toBeVisible({ timeout: 10_000 })
+
+    // const containerPedido = page.getByRole('paragraph')
+    //   .filter({ hasText: /^Pedido$/ })
+    //   .locator('..') // parent element
+    // await expect(containerPedido).toContainText(order, { timeout: 10_000 })
+
+    // await expect(page.getByText('APROVADO')).toBeVisible()

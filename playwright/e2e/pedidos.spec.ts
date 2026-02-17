@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 import { generateOrderCode } from '../support/helpers'
-import { OrderLockupPage } from '../support/pages/OrderLockupPage'
+import { OrderLockupPage, OrderDetails } from '../support/pages/OrderLockupPage'
 
 test.describe('Consulta de Pedido', () => {
 
@@ -17,9 +17,9 @@ test.describe('Consulta de Pedido', () => {
   test('should consult an approved order', async ({ page }) => {
 
     // Test Data
-    const order = {
+    const order: OrderDetails = {
       number: 'VLO-0D0081',
-      status: 'APROVADO' as const,
+      status: 'APROVADO',
       color: 'Midnight Black',
       wheels: 'sport Wheels',
       customer: {
@@ -34,36 +34,7 @@ test.describe('Consulta de Pedido', () => {
     await consultaPedido.searchOrder(order.number)
 
     // Assert
-    await expect(page.getByTestId(`order-result-${order.number}`)).toMatchAriaSnapshot(`
-      - img
-      - paragraph: Pedido
-      - paragraph: ${order.number}
-      - status:
-        - img
-        - text: ${order.status}
-      - img "Velô Sprint"
-      - paragraph: Modelo
-      - paragraph: Velô Sprint
-      - paragraph: Cor
-      - paragraph: ${order.color}
-      - paragraph: Interior
-      - paragraph: cream
-      - paragraph: Rodas
-      - paragraph: ${order.wheels}
-      - heading "Dados do Cliente" [level=4]
-      - paragraph: Nome
-      - paragraph: ${order.customer.name}
-      - paragraph: Email
-      - paragraph: ${order.customer.email}
-      - paragraph: Loja de Retirada
-      - paragraph
-      - paragraph: Data do Pedido
-      - paragraph: /\\d+\\/\\d+\\/\\d+/
-      - heading "Pagamento" [level=4]
-      - paragraph: ${order.payment}
-      - paragraph: /R\\$ \\d+\\.\\d+,\\d+/
-      `)
-    
+    await consultaPedido.validateOrderDetails(order)
     await consultaPedido.validateStatusBadge(order.status)
 
   })
@@ -71,9 +42,9 @@ test.describe('Consulta de Pedido', () => {
   test('should consult an reproved order', async ({ page }) => {
 
     // Test Data
-    const order = {
+    const order: OrderDetails = {
       number: 'VLO-ZQ33YD',
-      status: 'REPROVADO' as const,
+      status: 'REPROVADO',
       color: 'Glacier Blue',
       wheels: 'aero Wheels',
       customer: {
@@ -88,36 +59,7 @@ test.describe('Consulta de Pedido', () => {
     await consultaPedido.searchOrder(order.number)
 
     // Assert
-    await expect(page.getByTestId(`order-result-${order.number}`)).toMatchAriaSnapshot(`
-      - img
-      - paragraph: Pedido
-      - paragraph: ${order.number}
-      - status:
-        - img
-        - text: ${order.status}
-      - img "Velô Sprint"
-      - paragraph: Modelo
-      - paragraph: Velô Sprint
-      - paragraph: Cor
-      - paragraph: ${order.color}
-      - paragraph: Interior
-      - paragraph: cream
-      - paragraph: Rodas
-      - paragraph: ${order.wheels}
-      - heading "Dados do Cliente" [level=4]
-      - paragraph: Nome
-      - paragraph: ${order.customer.name}
-      - paragraph: Email
-      - paragraph: ${order.customer.email}
-      - paragraph: Loja de Retirada
-      - paragraph
-      - paragraph: Data do Pedido
-      - paragraph: /\\d+\\/\\d+\\/\\d+/
-      - heading "Pagamento" [level=4]
-      - paragraph: ${order.payment}
-      - paragraph: /R\\$ \\d+\\.\\d+,\\d+/
-      `)
-
+    await consultaPedido.validateOrderDetails(order)
     await consultaPedido.validateStatusBadge(order.status)
 
   })
@@ -125,9 +67,9 @@ test.describe('Consulta de Pedido', () => {
   test('should consult in analysis order', async ({ page }) => {
 
     // Test Data
-    const order = {
+    const order: OrderDetails = {
       number: 'VLO-PI0ADZ',
-      status: 'EM_ANALISE' as const,
+      status: 'EM_ANALISE',
       color: 'Lunar White',
       wheels: 'aero Wheels',
       customer: {
@@ -142,52 +84,30 @@ test.describe('Consulta de Pedido', () => {
     await consultaPedido.searchOrder(order.number)
 
     // Assert
-    await expect(page.getByTestId(`order-result-${order.number}`)).toMatchAriaSnapshot(`
-      - img
-      - paragraph: Pedido
-      - paragraph: ${order.number}
-      - status:
-        - img
-        - text: ${order.status}
-      - img "Velô Sprint"
-      - paragraph: Modelo
-      - paragraph: Velô Sprint
-      - paragraph: Cor
-      - paragraph: ${order.color}
-      - paragraph: Interior
-      - paragraph: cream
-      - paragraph: Rodas
-      - paragraph: ${order.wheels}
-      - heading "Dados do Cliente" [level=4]
-      - paragraph: Nome
-      - paragraph: ${order.customer.name}
-      - paragraph: Email
-      - paragraph: ${order.customer.email}
-      - paragraph: Loja de Retirada
-      - paragraph
-      - paragraph: Data do Pedido
-      - paragraph: /\\d+\\/\\d+\\/\\d+/
-      - heading "Pagamento" [level=4]
-      - paragraph: ${order.payment}
-      - paragraph: /R\\$ \\d+\\.\\d+,\\d+/
-      `)
-    
+    await consultaPedido.validateOrderDetails(order)
     await consultaPedido.validateStatusBadge(order.status)
 
   })
 
   test('should show a message when the order is not found', async ({ page }) => {
 
-    const order = generateOrderCode()
+    const orderCode = generateOrderCode()
 
     const consultaPedido = new OrderLockupPage(page)
-    await consultaPedido.searchOrder(order)
+    await consultaPedido.searchOrder(orderCode)
 
-    await expect(page.locator('#root')).toMatchAriaSnapshot(`
-      - img
-      - heading "Pedido não encontrado" [level=3]
-      - paragraph: Verifique o número do pedido e tente novamente
-      `)
+    await consultaPedido.validateOrderNotFound()
+
+  })
+
+  test('should show a message when the order code is outside the expected pattern', async ({ page }) => {
+
+    const orderCode = 'XXX-999'
+
+    const consultaPedido = new OrderLockupPage(page)
+    await consultaPedido.searchOrder(orderCode)
+
+    await consultaPedido.validateOrderNotFound()
 
   })
 

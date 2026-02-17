@@ -1,17 +1,19 @@
-import { test, expect } from '@playwright/test'
+import { test } from '@playwright/test'
 import { generateOrderCode } from '../support/helpers'
+import { LandingPage } from '../support/pages/LandingPage'
+import { Navbar } from '../support/components/Navbar'
 import { OrderLockupPage, OrderDetails } from '../support/pages/OrderLockupPage'
 
 test.describe('Consulta de Pedido', () => {
 
+  let orderLockupPage: OrderLockupPage
+
   test.beforeEach(async ({ page }) => {
+    await new LandingPage(page).goto()
+    await new Navbar(page).orderLockupLink()
 
-    // Arrange
-    await page.goto('http://localhost:5173/')
-    await expect(page.getByTestId('hero-section').getByRole('heading')).toContainText('Velô Sprint')
-    await page.getByRole('link', { name: 'Consultar Pedido' }).click()
-    await expect(page.getByRole('heading')).toContainText('Consultar Pedido')
-
+    orderLockupPage = new OrderLockupPage(page) 
+    await orderLockupPage.validatePageLoaded()
   })
 
   test('should consult an approved order', async ({ page }) => {
@@ -30,12 +32,11 @@ test.describe('Consulta de Pedido', () => {
     }
 
     // Act
-    const consultaPedido = new OrderLockupPage(page)
-    await consultaPedido.searchOrder(order.number)
+    await orderLockupPage.searchOrder(order.number)
 
     // Assert
-    await consultaPedido.validateOrderDetails(order)
-    await consultaPedido.validateStatusBadge(order.status)
+    await orderLockupPage.validateOrderDetails(order)
+    await orderLockupPage.validateStatusBadge(order.status)
 
   })
 
@@ -55,12 +56,11 @@ test.describe('Consulta de Pedido', () => {
     }
 
     // Act
-    const consultaPedido = new OrderLockupPage(page)
-    await consultaPedido.searchOrder(order.number)
+    await orderLockupPage.searchOrder(order.number)
 
     // Assert
-    await consultaPedido.validateOrderDetails(order)
-    await consultaPedido.validateStatusBadge(order.status)
+    await orderLockupPage.validateOrderDetails(order)
+    await orderLockupPage.validateStatusBadge(order.status)
 
   })
 
@@ -80,12 +80,11 @@ test.describe('Consulta de Pedido', () => {
     }
 
     // Act
-    const consultaPedido = new OrderLockupPage(page)
-    await consultaPedido.searchOrder(order.number)
+    await orderLockupPage.searchOrder(order.number)
 
     // Assert
-    await consultaPedido.validateOrderDetails(order)
-    await consultaPedido.validateStatusBadge(order.status)
+    await orderLockupPage.validateOrderDetails(order)
+    await orderLockupPage.validateStatusBadge(order.status)
 
   })
 
@@ -93,10 +92,8 @@ test.describe('Consulta de Pedido', () => {
 
     const orderCode = generateOrderCode()
 
-    const consultaPedido = new OrderLockupPage(page)
-    await consultaPedido.searchOrder(orderCode)
-
-    await consultaPedido.validateOrderNotFound()
+    await orderLockupPage.searchOrder(orderCode)
+    await orderLockupPage.validateOrderNotFound()
 
   })
 
@@ -104,10 +101,8 @@ test.describe('Consulta de Pedido', () => {
 
     const orderCode = 'XXX-999'
 
-    const consultaPedido = new OrderLockupPage(page)
-    await consultaPedido.searchOrder(orderCode)
-
-    await consultaPedido.validateOrderNotFound()
+    await orderLockupPage.searchOrder(orderCode)
+    await orderLockupPage.validateOrderNotFound()
 
   })
 

@@ -1,22 +1,13 @@
-import { test } from '@playwright/test'
+import { test } from '../support/fixtures'
 import { generateOrderCode } from '../support/helpers'
-import { LandingPage } from '../support/pages/LandingPage'
-import { Navbar } from '../support/components/Navbar'
-import { OrderLockupPage, OrderDetails } from '../support/pages/OrderLockupPage'
+import type { OrderDetails } from '../support/actions/orderLockupActions'
 
 test.describe('Consulta de Pedido', () => {
-
-  let orderLockupPage: OrderLockupPage
-
-  test.beforeEach(async ({ page }) => {
-    await new LandingPage(page).goto()
-    await new Navbar(page).orderLockupLink()
-
-    orderLockupPage = new OrderLockupPage(page) 
-    await orderLockupPage.validatePageLoaded()
+  test.beforeEach(async ({ app }) => {
+    await app.orderLockup.open()
   })
 
-  test('should consult an approved order', async ({ page }) => {
+  test('should consult an approved order', async ({ app }) => {
 
     // Test Data
     const order: OrderDetails = {
@@ -32,15 +23,15 @@ test.describe('Consulta de Pedido', () => {
     }
 
     // Act
-    await orderLockupPage.searchOrder(order.number)
+    await app.orderLockup.searchOrder(order.number)
 
     // Assert
-    await orderLockupPage.validateOrderDetails(order)
-    await orderLockupPage.validateStatusBadge(order.status)
+    await app.orderLockup.validateOrderDetails(order)
+    await app.orderLockup.validateStatusBadge(order.status)
 
   })
 
-  test('should consult an reproved order', async ({ page }) => {
+  test('should consult an reproved order', async ({ app }) => {
 
     // Test Data
     const order: OrderDetails = {
@@ -56,15 +47,15 @@ test.describe('Consulta de Pedido', () => {
     }
 
     // Act
-    await orderLockupPage.searchOrder(order.number)
+    await app.orderLockup.searchOrder(order.number)
 
     // Assert
-    await orderLockupPage.validateOrderDetails(order)
-    await orderLockupPage.validateStatusBadge(order.status)
+    await app.orderLockup.validateOrderDetails(order)
+    await app.orderLockup.validateStatusBadge(order.status)
 
   })
 
-  test('should consult in analysis order', async ({ page }) => {
+  test('should consult in analysis order', async ({ app }) => {
 
     // Test Data
     const order: OrderDetails = {
@@ -80,29 +71,29 @@ test.describe('Consulta de Pedido', () => {
     }
 
     // Act
-    await orderLockupPage.searchOrder(order.number)
+    await app.orderLockup.searchOrder(order.number)
 
     // Assert
-    await orderLockupPage.validateOrderDetails(order)
-    await orderLockupPage.validateStatusBadge(order.status)
+    await app.orderLockup.validateOrderDetails(order)
+    await app.orderLockup.validateStatusBadge(order.status)
 
   })
 
-  test('should show a message when the order is not found', async ({ page }) => {
+  test('should show a message when the order is not found', async ({ app }) => {
 
     const orderCode = generateOrderCode()
 
-    await orderLockupPage.searchOrder(orderCode)
-    await orderLockupPage.validateOrderNotFound()
+    await app.orderLockup.searchOrder(orderCode)
+    await app.orderLockup.validateOrderNotFound()
 
   })
 
-  test('should show a message when the order code is outside the expected pattern', async ({ page }) => {
+  test('should show a message when the order code is outside the expected pattern', async ({ app }) => {
 
     const orderCode = 'XXX-999'
 
-    await orderLockupPage.searchOrder(orderCode)
-    await orderLockupPage.validateOrderNotFound()
+    await app.orderLockup.searchOrder(orderCode)
+    await app.orderLockup.validateOrderNotFound()
 
   })
 

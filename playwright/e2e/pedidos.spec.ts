@@ -1,4 +1,4 @@
-import { test } from '../support/fixtures'
+import { expect, test } from '../support/fixtures'
 import { generateOrderCode } from '../support/helpers'
 import type { OrderDetails } from '../support/actions/orderLockupActions'
 
@@ -95,6 +95,15 @@ test.describe('Consulta de Pedido', () => {
     await app.orderLockup.searchOrder(orderCode)
     await app.orderLockup.validateOrderNotFound()
 
+  })
+
+  test('should disable search when input is empty or whitespace', async ({ app }) => {
+
+      const button = app.orderLockup.elements.searchButton
+      await expect(button).toBeDisabled()
+
+      await app.orderLockup.elements.orderInput.fill('     ')
+      await expect(button).toBeDisabled()
   })
 
 })

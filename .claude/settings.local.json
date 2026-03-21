@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /c/automatizai/velo -name \".cursorrules\" -o -name \".cursor\" -o -name \"CLAUDE.md\" -o -name \"*copilot*\" 2>/dev/null | head -20)",
+      "Bash(git log:*)",
+      "Bash(npm run:*)"
+    ]
+  }
+}

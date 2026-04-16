@@ -28,13 +28,9 @@ export function createConfiguratorActions(page: Page) {
       await page.getByRole('checkbox', { name: new RegExp(name) }).click()
     },
 
-    async clickCheckout() {
+    async finishConfigurator() {
       await page.getByRole('button', { name: 'Monte o Seu' }).click()
     },
 
-    async validateCheckoutRedirect(expectedPrice: string) {
-      await expect(page).toHaveURL(/\/order/)
-      await expect(page.getByTestId('summary-total-price')).toContainText(expectedPrice)
-    },
   }
 }

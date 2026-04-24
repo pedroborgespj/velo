@@ -3,7 +3,16 @@
     "allow": [
       "Bash(find /c/automatizai/velo -name \".cursorrules\" -o -name \".cursor\" -o -name \"CLAUDE.md\" -o -name \"*copilot*\" 2>/dev/null | head -20)",
       "Bash(git log:*)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5173)",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_snapshot",
+      "mcp__playwright__browser_click",
+      "Bash(npx playwright:*)"
     ]
-  }
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "playwright"
+  ]
 }

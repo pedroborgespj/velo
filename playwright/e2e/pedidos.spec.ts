@@ -1,6 +1,8 @@
 import { expect, test } from '../support/fixtures'
 import { generateOrderCode } from '../support/helpers'
 import type { OrderDetails } from '../support/actions/orderLockupActions'
+import { insertOrder, deleteOrderByNumber } from '../support/database/orderRepository'
+import crypto from 'crypto'
 
 test.describe('Order Lookup', () => {
   test.beforeEach(async ({ app }) => {
@@ -13,14 +15,32 @@ test.describe('Order Lookup', () => {
     const order: OrderDetails = {
       number: 'VLO-0D0081',
       status: 'APROVADO',
-      color: 'Midnight Black',
-      wheels: 'sport Wheels',
+      color: 'Glacier Blue',
+      wheels: 'aero Wheels',
       customer: {
         name: 'Pedro Junior',
         email: 'pedro@velo.dev'
       },
       payment: 'À Vista'
     }
+
+    await deleteOrderByNumber(order.number)
+    await insertOrder({
+      id: crypto.randomUUID(),
+      order_number: order.number,
+      color: 'glacier-blue',
+      wheel_type: 'aero',
+      customer_name: order.customer.name,
+      customer_email: order.customer.email,
+      customer_phone: '(11) 99999-9999',
+      customer_cpf: '780.228.290-05',
+      payment_method: 'avista',
+      total_price: '40000',
+      status: order.status,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      optionals: [],
+    })
 
     // Act
     await app.orderLockup.searchOrder(order.number)
@@ -37,14 +57,33 @@ test.describe('Order Lookup', () => {
     const order: OrderDetails = {
       number: 'VLO-ZQ33YD',
       status: 'REPROVADO',
-      color: 'Glacier Blue',
-      wheels: 'aero Wheels',
+      color: 'Midnight Black',
+      wheels: 'sport Wheels',
       customer: {
         name: 'Wallace Conen',
         email: 'wconen1@velo.dev'
       },
       payment: 'À Vista'
     }
+
+    await deleteOrderByNumber(order.number)
+
+    await insertOrder({
+      id: crypto.randomUUID(),
+      order_number: order.number,
+      color: 'midnight-black',
+      wheel_type: 'sport',
+      customer_name: order.customer.name,
+      customer_email: order.customer.email,
+      customer_phone: '(11) 99999-9999',
+      customer_cpf: '780.228.290-05',
+      payment_method: 'avista',
+      total_price: '40000',
+      status: order.status,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      optionals: [],
+    })
 
     // Act
     await app.orderLockup.searchOrder(order.number)
@@ -69,6 +108,25 @@ test.describe('Order Lookup', () => {
       },
       payment: 'À Vista'
     }
+
+    await deleteOrderByNumber(order.number)
+
+    await insertOrder({
+      id: crypto.randomUUID(),
+      order_number: order.number,
+      color: 'lunar-white',
+      wheel_type: 'aero',
+      customer_name: order.customer.name,
+      customer_email: order.customer.email,
+      customer_phone: '(11) 99999-9999',
+      customer_cpf: '780.228.290-05',
+      payment_method: 'avista',
+      total_price: '40000',
+      status: order.status,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      optionals: [],
+    })
 
     // Act
     await app.orderLockup.searchOrder(order.number)

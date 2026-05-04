@@ -8,7 +8,7 @@ export interface OrderTable {
   customer_phone: string
   customer_cpf: string
   payment_method: string
-  total_price: string
+  total_price: number
   status: string
   created_at: Date | string
   updated_at: Date | string

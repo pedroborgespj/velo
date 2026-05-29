@@ -48,6 +48,10 @@ export function createCheckoutActions(page: Page) {
             await page.getByRole('option', { name: storeName }).click()
         },
 
+        async selectPaymentMethod(method: string) {
+            await page.getByRole('button', { name: new RegExp(method, 'i') }).click()
+        },
+
         async acceptTerms() {
             await terms.check()
         },

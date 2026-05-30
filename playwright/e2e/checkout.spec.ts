@@ -160,6 +160,55 @@ test.describe('Checkout', () => {
       await expect(page).toHaveURL(/\/success/)
       await expect(page.getByRole('heading', { name: 'Pedido Aprovado!' })).toBeVisible()
     })
+
+    test('should automatically approve credit when the CPF score is greater than 700 in financing', async ({ page, app}) => {
+      const customer = {
+        name: 'Steve',
+        lastname: 'Woz',
+        email: 'score700-financing@test.com',
+        phone: '(11) 99999-9999',
+        document: '05366127068',
+        store: 'Velô Paulista',
+        paymentMethod: 'Financiamento',
+        totalPrice: 'R$ 40.000,00',
+      }
+
+      await deleteOrdersByEmail(customer.email)
+
+      // Network Interception: Created a route that 'listens' to the request to the credit analysis endpoint and replaces the response at runtime (dynamic mocking technique).
+      await page.route('**/functions/v1/credit-analysis', async route => {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            status: 'Done',
+            score: 710,
+          })
+        })
+      })
+
+      // Arrange
+      await page.goto('/')
+      await page.getByRole('link', {name: /Configure Agora/i }).click()
+
+      await app.configurator.validatePrice(customer.totalPrice)
+      await app.configurator.finishConfigurator()
+      await app.checkout.expectedLoaded()
+
+      await app.checkout.fillCustomerData(customer)
+      await app.checkout.selectStore(customer.store)
+
+      // Act
+      await app.checkout.selectPaymentMethod(customer.paymentMethod)
+      // await app.checkout.expectSummaryTotal(customer.totalPrice)
+      await app.checkout.acceptTerms()
+      await app.checkout.submit()
+
+      // Assert
+      await expect(page).toHaveURL(/\/success/)
+      await expect(page.getByRole('heading', { name: 'Pedido Aprovado!' })).toBeVisible()
+    })
+
   })
 
 

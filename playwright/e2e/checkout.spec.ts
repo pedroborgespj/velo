@@ -209,6 +209,52 @@ test.describe('Checkout', () => {
       await expect(page.getByRole('heading', { name: 'Pedido Aprovado!' })).toBeVisible()
     })
 
+    test('should set the order to EM_ANALISE when the CPF score is between 501 and 700 in financing', async ({ page, app}) => {
+      const customer = {
+        name: 'Bill',
+        lastname: 'Gates',
+        email: 'score-medium-financing@test.com',
+        phone: '(11) 99999-9999',
+        document: '74690251037',
+        store: 'Velô Paulista',
+        paymentMethod: 'Financiamento',
+        totalPrice: 'R$ 40.000,00',
+      }
+
+      await deleteOrdersByEmail(customer.email)
+
+      await page.route('**/functions/v1/credit-analysis', async route => {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            status: 'Done',
+            score: 600,
+          })
+        })
+      })
+
+      // Arrange
+      await page.goto('/')
+      await page.getByRole('link', {name: /Configure Agora/i }).click()
+
+      await app.configurator.validatePrice(customer.totalPrice)
+      await app.configurator.finishConfigurator()
+      await app.checkout.expectedLoaded()
+
+      await app.checkout.fillCustomerData(customer)
+      await app.checkout.selectStore(customer.store)
+
+      // Act
+      await app.checkout.selectPaymentMethod(customer.paymentMethod)
+      await app.checkout.acceptTerms()
+      await app.checkout.submit()
+
+      // Assert
+      await expect(page).toHaveURL(/\/success/)
+      await expect(page.getByRole('heading', { name: 'Pedido em Análise!' })).toBeVisible()
+    })
+
   })
 
 

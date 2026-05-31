@@ -52,6 +52,10 @@ export function createCheckoutActions(page: Page) {
             await page.getByRole('button', { name: new RegExp(method, 'i') }).click()
         },
 
+        async fillEntryValue(value: number | string) {
+            await page.getByTestId('input-entry-value').fill(String(value))
+        },
+
         async acceptTerms() {
             await terms.check()
         },

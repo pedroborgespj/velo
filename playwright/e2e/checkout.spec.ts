@@ -255,6 +255,196 @@ test.describe('Checkout', () => {
       await expect(page.getByRole('heading', { name: 'Pedido em Análise!' })).toBeVisible()
     })
 
+    test('should set the order to REPROVADO when the CPF score is 500 or less and entry is 0 in financing', async ({ page, app}) => {
+      const customer = {
+        name: 'Larry',
+        lastname: 'Page',
+        email: 'score-low-financing@test.com',
+        phone: '(11) 99999-9999',
+        document: '00000014141',
+        store: 'Velô Paulista',
+        paymentMethod: 'Financiamento',
+        totalPrice: 'R$ 40.000,00',
+      }
+
+      await deleteOrdersByEmail(customer.email)
+
+      await page.route('**/functions/v1/credit-analysis', async route => {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            status: 'Done',
+            score: 400,
+          })
+        })
+      })
+
+      // Arrange
+      await page.goto('/')
+      await page.getByRole('link', {name: /Configure Agora/i }).click()
+
+      await app.configurator.validatePrice(customer.totalPrice)
+      await app.configurator.finishConfigurator()
+      await app.checkout.expectedLoaded()
+
+      await app.checkout.fillCustomerData(customer)
+      await app.checkout.selectStore(customer.store)
+
+      // Act
+      await app.checkout.selectPaymentMethod(customer.paymentMethod)
+      await app.checkout.acceptTerms()
+      await app.checkout.submit()
+
+      // Assert
+      await expect(page).toHaveURL(/\/success/)
+      await expect(page.getByRole('heading', { name: 'Crédito Reprovado' })).toBeVisible()
+    })
+
+    test('should set the order to REPROVADO when the CPF score is 500 or less and entry is below 50% in financing', async ({ page, app}) => {
+      const customer = {
+        name: 'Sergey',
+        lastname: 'Brin',
+        email: 'score-low-financing-entry@test.com',
+        phone: '(11) 99999-9999',
+        document: '00000014141',
+        store: 'Velô Paulista',
+        paymentMethod: 'Financiamento',
+        totalPrice: 'R$ 40.000,00',
+        entryValue: 10000, // 25% do total → abaixo de 50%
+      }
+
+      await deleteOrdersByEmail(customer.email)
+
+      await page.route('**/functions/v1/credit-analysis', async route => {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            status: 'Done',
+            score: 400,
+          })
+        })
+      })
+
+      // Arrange
+      await page.goto('/')
+      await page.getByRole('link', {name: /Configure Agora/i }).click()
+
+      await app.configurator.validatePrice(customer.totalPrice)
+      await app.configurator.finishConfigurator()
+      await app.checkout.expectedLoaded()
+
+      await app.checkout.fillCustomerData(customer)
+      await app.checkout.selectStore(customer.store)
+
+      // Act
+      await app.checkout.selectPaymentMethod(customer.paymentMethod)
+      await app.checkout.fillEntryValue(customer.entryValue)
+      await app.checkout.acceptTerms()
+      await app.checkout.submit()
+
+      // Assert
+      await expect(page).toHaveURL(/\/success/)
+      await expect(page.getByRole('heading', { name: 'Crédito Reprovado' })).toBeVisible()
+    })
+
+    test('should set the order to REPROVADO when the CPF score is 500 or less and entry is equal to 50% in financing', async ({ page, app}) => {
+      const customer = {
+        name: 'Diane',
+        lastname: 'Prince',
+        email: 'score-low-entry-equal50@test.com',
+        phone: '(11) 99999-9999',
+        document: '00000014141',
+        store: 'Velô Paulista',
+        paymentMethod: 'Financiamento',
+        totalPrice: 'R$ 40.000,00',
+        entryValue: 20000, 
+      }
+
+      await deleteOrdersByEmail(customer.email)
+
+      await page.route('**/functions/v1/credit-analysis', async route => {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            status: 'Done',
+            score: 450,
+          })
+        })
+      })
+
+      // Arrange
+      await page.goto('/')
+      await page.getByRole('link', {name: /Configure Agora/i }).click()
+
+      await app.configurator.validatePrice(customer.totalPrice)
+      await app.configurator.finishConfigurator()
+      await app.checkout.expectedLoaded()
+
+      await app.checkout.fillCustomerData(customer)
+      await app.checkout.selectStore(customer.store)
+
+      // Act
+      await app.checkout.selectPaymentMethod(customer.paymentMethod)
+      await app.checkout.fillEntryValue(customer.entryValue)
+      await app.checkout.acceptTerms()
+      await app.checkout.submit()
+
+      // Assert
+      await expect(page).toHaveURL(/\/success/)
+      await expect(page.getByRole('heading', { name: 'Pedido Aprovado' })).toBeVisible()
+    })
+
+    test('should set the order to REPROVADO when the CPF score is 500 or less and entry is higher than 50% in financing', async ({ page, app}) => {
+      const customer = {
+        name: 'Richard',
+        lastname: 'Fortus',
+        email: 'score-low-entry-high50@test.com',
+        phone: '(11) 99999-9999',
+        document: '00000014141',
+        store: 'Velô Paulista',
+        paymentMethod: 'Financiamento',
+        totalPrice: 'R$ 40.000,00',
+        entryValue: 30000, 
+      }
+
+      await deleteOrdersByEmail(customer.email)
+
+      await page.route('**/functions/v1/credit-analysis', async route => {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            status: 'Done',
+            score: 450,
+          })
+        })
+      })
+
+      // Arrange
+      await page.goto('/')
+      await page.getByRole('link', {name: /Configure Agora/i }).click()
+
+      await app.configurator.validatePrice(customer.totalPrice)
+      await app.configurator.finishConfigurator()
+      await app.checkout.expectedLoaded()
+
+      await app.checkout.fillCustomerData(customer)
+      await app.checkout.selectStore(customer.store)
+
+      // Act
+      await app.checkout.selectPaymentMethod(customer.paymentMethod)
+      await app.checkout.fillEntryValue(customer.entryValue)
+      await app.checkout.acceptTerms()
+      await app.checkout.submit()
+
+      // Assert
+      await expect(page).toHaveURL(/\/success/)
+      await expect(page.getByRole('heading', { name: 'Pedido Aprovado' })).toBeVisible()
+    })
+
   })
 
 

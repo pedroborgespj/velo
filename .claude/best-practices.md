@@ -15,6 +15,8 @@ Lessons learned from implementing Kysely-based database seeding for the `pedidos
 
 **Why:** Separating schema, connection, and operations makes each file single-purpose and easier to extend when new tables or operations are needed.
 
+> **Update:** The canonical order test data now lives in `playwright/support/fixtures/orders.json`, imported with a JSON import assertion (`import testData from '../support/fixtures/orders.json' with { type: 'json' }`). `pedidos.spec.ts` reads `approved`/`reproved`/`inAnalysis` from there and seeds each one per-test, keeping the spec free of hardcoded data. `checkout.spec.ts` instead defines its `customer` inline and clears prior runs with `deleteOrdersByEmail(email)`.
+
 ### 2. Seeding Strategy — Per-test inline seeding vs shared `beforeAll`
 
 **Plan proposed:** Centralized seed data array in `seedOrders.ts`, inserted in `beforeAll`, cleaned up in `afterAll`.

@@ -33,7 +33,7 @@ The dev server must be running (`npm run dev`) before executing Playwright tests
 
 **Backend**: Supabase (orders table). Client in `src/integrations/supabase/client.ts`, DB types auto-generated in `types.ts`.
 
-**Routing** (React Router v6): `/` landing → `/configurator` → `/order` → `/success`. Also `/order-lookup` for searching existing orders, plus `/terms`, `/privacy`.
+**Routing** (React Router v6): `/` landing → `/configure` → `/order` → `/success`. Also `/lookup` for searching existing orders, plus `/termos`, `/privacidade`.
 
 **Path alias**: `@/*` maps to `src/*` (configured in tsconfig and vite.config).
 
@@ -43,7 +43,9 @@ Tests live in `playwright/` using a **Feature Actions** pattern (not Page Object
 
 - `playwright/e2e/*.spec.ts` — test specs
 - `playwright/support/fixtures.ts` — custom `test` fixture exposing an `app` object
-- `playwright/support/actions/` — factory functions that return action objects encapsulating element locators and interactions (e.g., `createOrderLockupActions()`)
+- `playwright/support/actions/` — factory functions that return action objects encapsulating element locators and interactions (e.g., `createOrderLockupActions()`, `createConfiguratorActions()`, `createCheckoutActions()`)
+- `playwright/support/database/` — Kysely-based seeding layer (`database.ts` client/connection, `schema.ts` table types, `orderRepository.ts` thin `insertOrder`/`deleteOrderByNumber`/`deleteOrdersByEmail` functions)
+- `playwright/support/fixtures/orders.json` — canonical order test data seeded by `pedidos.spec.ts`
 - `playwright/support/helpers.ts` — utilities like `generateOrderCode()`
 
 Tests import from the custom fixture: `import { test, expect } from '../support/fixtures'`

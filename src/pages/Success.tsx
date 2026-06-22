@@ -67,7 +67,7 @@ const STATUS_CONFIG: Record<
     iconWrapper: 'bg-destructive/10',
     iconColor: 'text-destructive',
     titleColor: 'text-destructive',
-    title: 'Crédito Reprovado',
+    title: 'Pedido Reprovado!',
     message:
       'Infelizmente seu crédito não foi aprovado. Tente novamente com pagamento à vista.',
   },

@@ -4,7 +4,7 @@ import { deleteOrdersByEmail } from '../support/database/orderRepository'
 
 test.describe('Checkout', () => {
 
-  test.describe('Validações de campos obrigatórios', () => {
+  test.describe('Mandatory fields validation', () => {
 
     let alerts: any
 
@@ -125,9 +125,8 @@ test.describe('Checkout', () => {
 
   test.describe('Payment and Confirmation', () => {
 
-    test.beforeEach(async ({ page }) => {
-      await page.goto('/')
-      await page.getByRole('link', {name: /Configure Agora/i }).click()
+    test.beforeEach(async ({ app }) => {
+      await app.hero.open()
     })
 
     test('should successfully create an order for cash payment', async ({ app }) => {
@@ -175,7 +174,7 @@ test.describe('Checkout', () => {
       }
 
       await deleteOrdersByEmail(customer.email)
-      await app.checkout.mockCreditScore(710)
+      await app.mock.creditAnalysis(710)
 
       // Arrange
       await app.configurator.validatePrice(customer.totalPrice)
@@ -207,7 +206,7 @@ test.describe('Checkout', () => {
       }
 
       await deleteOrdersByEmail(customer.email)
-      await app.checkout.mockCreditScore(600)
+      await app.mock.creditAnalysis(600)
 
       // Arrange
       await app.configurator.validatePrice(customer.totalPrice)
@@ -239,7 +238,7 @@ test.describe('Checkout', () => {
       }
 
       await deleteOrdersByEmail(customer.email)
-      await app.checkout.mockCreditScore(400)
+      await app.mock.creditAnalysis(400)
 
       // Arrange
       await app.configurator.validatePrice(customer.totalPrice)
@@ -255,7 +254,7 @@ test.describe('Checkout', () => {
       await app.checkout.submit()
 
       // Assert
-      await app.checkout.expectSuccessStatus('Crédito Reprovado')
+      await app.checkout.expectSuccessStatus('Pedido Reprovado!')
     })
 
     test('should set the order to REPROVADO when the CPF score is 500 or less and entry is below 50% in financing', async ({ app }) => {
@@ -272,7 +271,7 @@ test.describe('Checkout', () => {
       }
 
       await deleteOrdersByEmail(customer.email)
-      await app.checkout.mockCreditScore(400)
+      await app.mock.creditAnalysis(400)
 
       // Arrange
       await app.configurator.validatePrice(customer.totalPrice)
@@ -289,7 +288,7 @@ test.describe('Checkout', () => {
       await app.checkout.submit()
 
       // Assert
-      await app.checkout.expectSuccessStatus('Crédito Reprovado')
+      await app.checkout.expectSuccessStatus('Pedido Reprovado!')
     })
 
     test('should approve the order when the CPF score is 500 or less but entry is equal to 50% in financing', async ({ app }) => {
@@ -306,7 +305,7 @@ test.describe('Checkout', () => {
       }
 
       await deleteOrdersByEmail(customer.email)
-      await app.checkout.mockCreditScore(450)
+      await app.mock.creditAnalysis(450)
 
       // Arrange
       await app.configurator.validatePrice(customer.totalPrice)
@@ -323,7 +322,7 @@ test.describe('Checkout', () => {
       await app.checkout.submit()
 
       // Assert
-      await app.checkout.expectSuccessStatus('Pedido Aprovado')
+      await app.checkout.expectSuccessStatus('Pedido Aprovado!')
     })
 
     test('should approve the order when the CPF score is 500 or less but entry is higher than 50% in financing', async ({ app }) => {
@@ -340,7 +339,7 @@ test.describe('Checkout', () => {
       }
 
       await deleteOrdersByEmail(customer.email)
-      await app.checkout.mockCreditScore(450)
+      await app.mock.creditAnalysis(450)
 
       // Arrange
       await app.configurator.validatePrice(customer.totalPrice)
@@ -357,7 +356,7 @@ test.describe('Checkout', () => {
       await app.checkout.submit()
 
       // Assert
-      await app.checkout.expectSuccessStatus('Pedido Aprovado')
+      await app.checkout.expectSuccessStatus('Pedido Aprovado!')
     })
 
   })

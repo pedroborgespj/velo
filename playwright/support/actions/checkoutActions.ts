@@ -29,19 +29,9 @@ export function createCheckoutActions(page: Page) {
             await expect(page.getByTestId('summary-total-price')).toContainText(price)
         },
 
-        async mockCreditScore(score: number) {
-            await page.route('**/functions/v1/credit-analysis', async route => {
-                await route.fulfill({
-                    status: 200,
-                    contentType: 'application/json',
-                    body: JSON.stringify({ status: 'Done', score }),
-                })
-            })
-        },
-
-        async expectSuccessStatus(title: string) {
+        async expectSuccessStatus(status: string) {
             await expect(page).toHaveURL(/\/success/)
-            await expect(page.getByRole('heading', { name: title })).toBeVisible()
+            await expect(page.getByRole('heading', { name: status })).toBeVisible()
         },
 
         async fillCustomerData(data: {

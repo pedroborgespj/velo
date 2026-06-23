@@ -8,7 +8,12 @@
       "mcp__playwright__browser_navigate",
       "mcp__playwright__browser_snapshot",
       "mcp__playwright__browser_click",
-      "Bash(npx playwright:*)"
+      "Bash(npx playwright:*)",
+      "PowerShell(npm install *)",
+      "PowerShell(npx vitest run src/store/configuratorStore.test.ts)",
+      "PowerShell(npx vitest run)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
     ]
   },
   "enableAllProjectMcpServers": true,

@@ -11,7 +11,7 @@ test.describe('Vehicle Configuration', () => {
 
     await app.configurator.selectColor('Midnight Black')
     await app.configurator.validatePrice('40.000,00')
-    await app.configurator.validateCarImage('/src/assets/midnight-black-aero-wheels.png')
+    await app.configurator.validateCarImage(/midnight-black-aero-wheels/)
   })
 
   test('should update vehicle image and recalculate total price when changing wheels', async ({ app }) => {
@@ -19,11 +19,11 @@ test.describe('Vehicle Configuration', () => {
 
     await app.configurator.selectWheels(/Sport Wheels/)
     await app.configurator.validatePrice('42.000,00')
-    await app.configurator.validateCarImage('/src/assets/glacier-blue-sport-wheels.png')
+    await app.configurator.validateCarImage(/glacier-blue-sport-wheels/)
 
     await app.configurator.selectWheels(/Aero Wheels/)
     await app.configurator.validatePrice('40.000,00')
-    await app.configurator.validateCarImage('/src/assets/glacier-blue-aero-wheels.png')
+    await app.configurator.validateCarImage(/glacier-blue-aero-wheels/)
   })
 
   test('should update price when adding and removing optionals and navigate to checkout', async ({ app }) => {

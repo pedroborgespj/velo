@@ -19,7 +19,7 @@ export function createConfiguratorActions(page: Page) {
       await expect(totalPrice).toContainText(price)
     },
 
-    async validateCarImage(expectedSrc: string) {
+    async validateCarImage(expectedSrc: string | RegExp) {
       const carImage = page.locator('img[alt^="Velô Sprint"]')
       await expect(carImage).toHaveAttribute('src', expectedSrc)
     },

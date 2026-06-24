@@ -25,3 +25,23 @@ Some asserts validations - examples
     // await expect(containerPedido).toContainText(order, { timeout: 10_000 })
 
     // await expect(page.getByText('APROVADO')).toBeVisible()
+
+
+Notas da aula "Deploy Manual com Vercel CLI e Testes em Preview"
+O que foi feito:
+- Instalação da Vercel CLI como dependência de desenvolvimento com yarn add vercel -D
+- Autenticação com a conta do Vercel usando vercel link no terminal
+- Compilação da aplicação com yarn vercel build gerando versão pronta para deploy
+- Deploy em ambiente de preview com yarn vercel deploy --prebuilt --target preview
+- Obtenção de URL de preview gerada dinamicamente pelo Vercel
+- Atualização da URL base no playwright.config.ts para apontar para o ambiente de preview
+- Execução dos testes E2E no ambiente de preview
+
+Problema comum: Autenticação do Vercel
+- O ambiente de preview pode ter "Deployment Protection" ativado por padrão
+- Testes falhando com "Element not found" porque a página solicita autenticação do Vercel
+- Solução: desabilitar a proteção de autenticação em Settings → Environment → Deployment Protection
+- Após a correção, todos os 22 testes passaram com sucesso
+
+Resultado:
+Deploy manual em preview funcional, permitindo testar a aplicação antes de colocar em produção e preparando para automação no pipeline CI/CD.

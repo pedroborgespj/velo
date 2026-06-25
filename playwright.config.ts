@@ -40,7 +40,7 @@ export default defineConfig({
     baseURL: process.env.BASE_URL || 'http://localhost:5173/',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
+    trace: 'on',
     // Max time for interactive actions to pass (click(), fill(), etc.)
     // When the value is 0, it will consider the max time from the main timeout.
     actionTimeout: 5_000,

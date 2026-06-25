@@ -13,8 +13,13 @@
       "PowerShell(npx vitest run src/store/configuratorStore.test.ts)",
       "PowerShell(npx vitest run)",
       "Bash(git add *)",
-      "Bash(git commit *)",
-      "Bash(npx vitest *)"
+      "Bash(npx vitest *)",
+      "Bash(grep -iA2 '\"@playwright/test\"' yarn.lock)",
+      "Bash(npm view *)",
+      "Skill(update-config)"
+    ],
+    "ask": [
+      "Bash(git commit:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

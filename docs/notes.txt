@@ -45,3 +45,8 @@ Problema comum: Autenticação do Vercel
 
 Resultado:
 Deploy manual em preview funcional, permitindo testar a aplicação antes de colocar em produção e preparando para automação no pipeline CI/CD.
+
+Diferenças importantes:
+Continuous Integration (CI): Apenas integração e testes, sem deploy
+Continuous Delivery (CD): Pronto para deploy, mas precisa aprovação humana
+Continuous Deployment: 100% automatizado, sem intervenção humana (implementado aqui)

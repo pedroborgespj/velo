@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Env (segredos ficam fora do git; use .env.example como modelo)
+.env
+.env.*
+!.env.example
+
 # TypeScript incremental build cache
 *.tsbuildinfo
 
@@ -34,3 +39,6 @@ dist-ssr
 /playwright/.auth/
 .playwright-mcp
 .vercel
+
+# Supabase — estado local do CLI (não versionar)
+supabase/.temp/
